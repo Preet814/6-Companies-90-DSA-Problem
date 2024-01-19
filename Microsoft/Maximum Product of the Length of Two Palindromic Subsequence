@@ -1,0 +1,63 @@
+Problem : Given a string s, find two disjoint palindromic subsequences of s such that the product of their lengths is maximized.
+          The two subsequences are disjoint if they do not both pick a character at the same index.
+          Return the maximum possible product of the lengths of the two palindromic subsequences.
+          A subsequence is a string that can be derived from another string by deleting some or no 
+          characters without changing the order of the remaining characters. A string is palindromic 
+          if it reads the same forward and backward.
+
+          Example 1:
+          example-1
+          Input: s = "leetcodecom"
+          Output: 9
+          Explanation: An optimal solution is to choose "ete" for the 1st subsequence and "cdc" for the 2nd subsequence.
+          The product of their lengths is: 3 * 3 = 9.
+
+Solution : 
+
+class Solution {
+public:
+    // step 2: Find longest Palindromic Subsequence : here we receive a string as input and we have to return the longest palindromic subsequeunce length in given string
+    // this is the space optimized code of LPS 
+    int LPS(string& s1){
+        string s2=s1;
+        reverse(s2.begin(),s2.end());
+        int n=s1.size();
+        int m=s2.size();
+        vector<int> prev(m+1,0);
+        vector<int> curr(m+1,0);
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=m;j++){
+                if(s1[i-1]==s2[j-1]){
+                    curr[j]=1+prev[j-1];
+                }
+                else{
+                    curr[j]=max(prev[j],curr[j-1]);
+                }
+            }
+            prev=curr;
+        }
+        return prev[m];
+    }
+    // this problem is break down into 2 major subproblem
+    int maxProduct(string s) {
+        int ans=0;
+        int n=s.size();
+        // step 1: Finding all subsequence : using bitmasking concept we get all the subsequence possible from the string s
+        for(int i=1;i<(1<<n)-1;i++){
+            string s1="",s2="";
+            // here 2 subsequence are calculated at once so that none of them are disjoint to each other
+            for(int j=0;j<n;j++){
+                if(i&(1<<j)){
+                    s1+=s[j];
+                }
+                else{
+                    s2+=s[j];
+                }
+            }
+            // LPS fxn returns length of longest palindromic subsequence
+            // LPS of s1 and s2 is multiplied to get maximum product
+            ans=max(ans,LPS(s1)*LPS(s2));
+        }
+        return ans;
+    }
+};
