@@ -1,0 +1,34 @@
+Problem : Given an integer array nums, reorder it such that nums[0] < nums[1] > nums[2] < nums[3]....
+          You may assume the input array always has a valid answer.
+          
+          Example 1:
+          Input: nums = [1,5,1,1,6,4]
+          Output: [1,6,1,5,1,4]
+          Explanation: [1,4,1,5,1,6] is also accepted.
+
+Solution : 
+
+void wiggleSort(vector<int>& nums) {
+        // lets take example : nums=[1,5,1,1,6,4]
+        vector<int> ans(nums.size());
+        sort(nums.begin(),nums.end()); // nums=[1,1,1,4,5,6]
+        // 2 pointer approach: j pointing towards the larget element of array
+        int j=nums.size()-1;
+        // this for loop puts large element in index 1,3,5,and so on
+        for(int i=1;i<nums.size();i=i+2){
+            ans[i]=nums[j];
+            j--;
+        }
+        // ans array indexes 1,3,5 will have value ans=[ ,6, ,5, ,4]
+        // this for loop will cover indexes like 0,2,4, and so on and puts smaller values
+        for(int i=0;i<nums.size();i=i+2){
+            ans[i]=nums[j];
+            j--;
+        }
+        // ans array after this loop will be wiggled sorted
+        // ans=[1,6,1,5,1,4] 
+        // pushing back elements in original nums array
+        for(int i=0;i<nums.size();i++){
+            nums[i]=ans[i];
+        }
+    }
