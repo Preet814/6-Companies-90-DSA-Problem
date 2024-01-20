@@ -1,0 +1,74 @@
+Problem : In LeetCode Store, there are n items to sell. Each item has a price. However, there are some special offers, and a 
+          special offer consists of one or more different kinds of items with a sale price.
+          You are given an integer array price where price[i] is the price of the ith item, and an integer array needs 
+          where needs[i] is the number of pieces of the ith item you want to buy.
+          You are also given an array special where special[i] is of size n + 1 where special[i][j] is the number of 
+          pieces of the jth item in the ith offer and special[i][n] (i.e., the last integer in the array) is the price 
+          of the ith offer.
+          Return the lowest price you have to pay for exactly certain items as given, where you could make optimal use 
+          of the special offers. You are not allowed to buy more items than you want, even if that would lower the 
+          overall price. You could use any of the special offers as many times as you want.
+          
+          Example 1:
+          Input: price = [2,5], special = [[3,0,5],[1,2,10]], needs = [3,2]
+          Output: 14
+          Explanation: There are two kinds of items, A and B. Their prices are $2 and $5 respectively. 
+          In special offer 1, you can pay $5 for 3A and 0B
+          In special offer 2, you can pay $10 for 1A and 2B. 
+          You need to buy 3A and 2B, so you may pay $10 for 1A and 2B (special offer #2), and $4 for 2A.
+
+Solution : 
+
+class Solution {
+public:
+    int solve(int idx,vector<int>& price, vector<vector<int>>& special, vector<int>& needs,int n){
+        if(idx==special.size()){
+            int ans=0;
+            for(int i=0;i<needs.size();i++){
+                ans+=needs[i]*price[i];
+            }
+            return ans;
+        }
+
+        bool isValid=true;
+        for(int i=0;i<needs.size();i++){
+            if(needs[i]<special[idx][i]){
+                isValid=false;
+                break;
+            }
+        }
+        if(isValid==true){
+            for(int i=0; i<n; i++){
+                needs[i] -= special[idx][i];
+            }
+            int offerPrice=special[idx][n]+solve(idx,price,special,needs,n);
+            for(int i=0; i<n; i++){
+                needs[i] += special[idx][i];
+            }
+            return min(offerPrice,solve(idx+1,price,special,needs,n));
+        }
+        return solve(idx+1,price,special,needs,n);
+    }
+    int shoppingOffers(vector<int>& price, vector<vector<int>>& special, vector<int>& needs) {
+    // example explanation:
+        // price=[2,5],needs=[3,2],special=[[3,0,5],[1,2,10]]
+        // needs array gives lets suppose demand of 3 Apple and 2 Banana
+        // price array gives price of 1 Apple 2 Rs and 1 Banana 5 Rs
+        // now the worst case ans be for 3 Apple and 2 Banana from needs[] price would be 2 rs per apple and 5 rs per banana which gives (3*2)+(2*5)=16 rs
+        // we have to minimize the ans so we use special offer
+        // in special[0] gives [3,0,5] where there is a dicount price on 3 Apple and 0 Banana for 5 rs
+        // similarly special[1] gives 1 apple and 2 banana for 10 rs
+
+// Approach in basically checking if:
+    // for i=0 to needs.size if(needs[i]<special[index][i]) mark flag false and break;
+    // now if after completetion of loop if flag is true then update needs array and solve further
+        // offer_price is special[index][n] ([3,0,5] ki last value which is price =5 rs) + recursive solution 
+        // here backtracking of need is also done so that we can get our prev needs array
+        // ans is min of offer_price and recursive solution with index+1
+    // or else just move index to index+1
+        int n=price.size();
+        int index=0;
+        // we divided the problem to subproblem so using recursion
+        return solve(index,price,special,needs,n);
+    }
+};
