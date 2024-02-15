@@ -1,0 +1,45 @@
+Problem : You are given four integers row, cols, rCenter, and cCenter. There is a rows x cols matrix and you are on the cell 
+          with the coordinates (rCenter, cCenter).
+          Return the coordinates of all cells in the matrix, sorted by their distance from (rCenter, cCenter) from the 
+          smallest distance to the largest distance. You may return the answer in any order that satisfies this condition.
+          The distance between two cells (r1, c1) and (r2, c2) is |r1 - r2| + |c1 - c2|.
+          
+          Example 1:
+          Input: rows = 1, cols = 2, rCenter = 0, cCenter = 0
+          Output: [[0,0],[0,1]]
+          Explanation: The distances from (0, 0) to other cells are: [0,1]
+
+Solution : 
+
+class Solution {
+public:
+    vector<vector<int>> allCellsDistOrder(int rows, int cols, int rCenter, int cCenter) {
+        queue<pair<int,int>> q;
+        vector<vector<int>> vis(rows,vector<int>(cols,0));
+        vector<vector<int>> ans;
+
+        q.push({rCenter,cCenter});
+        ans.push_back({rCenter,cCenter});
+        vis[rCenter][cCenter]=1;
+
+        int delR[4]={-1,0,1,0};
+        int delC[4]={0,1,0,-1};
+
+        while(!q.empty()){
+            auto val=q.front();
+            q.pop();
+            int x=val.first;
+            int y=val.second;
+            for(int i=0;i<4;i++){
+                int nx=x+delR[i];
+                int ny=y+delC[i];
+                if(nx>=0 && nx<rows && ny>=0 && ny<cols && vis[nx][ny]==0){
+                    q.push({nx,ny});
+                    vis[nx][ny]=1;
+                    ans.push_back({nx,ny});
+                }
+            }
+        }
+        return ans;
+    }
+};
