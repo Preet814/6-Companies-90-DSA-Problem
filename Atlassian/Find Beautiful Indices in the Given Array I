@@ -1,0 +1,55 @@
+Problem : You are given a 0-indexed string s, a string a, a string b, and an integer k.
+          An index i is beautiful if:
+          0 <= i <= s.length - a.length
+          s[i..(i + a.length - 1)] == a
+          There exists an index j such that:
+          0 <= j <= s.length - b.length
+          s[j..(j + b.length - 1)] == b
+          |j - i| <= k
+          Return the array that contains beautiful indices in sorted order from smallest to largest.
+          
+          Example 1:
+          Input: s = "isawsquirrelnearmysquirrelhouseohmy", a = "my", b = "squirrel", k = 15
+          Output: [16,33]
+          Explanation: There are 2 beautiful indices: [16,33].
+          - The index 16 is beautiful as s[16..17] == "my" and there exists an index 4 with 
+          s[4..11] == "squirrel" and |16 - 4| <= 15.
+          - The index 33 is beautiful as s[33..34] == "my" and there exists an index 18 with 
+          s[18..25] == "squirrel" and |33 - 18| <= 15.
+          Thus we return [16,33] as the result.
+
+Solution : 
+
+class Solution {
+public:
+    vector<int> beautifulIndices(string s, string a, string b, int k) {
+        int n=s.size();
+        if(n<a.size() || n<b.size()){
+            return {};
+        }
+        vector<int>v1,v2;
+        for(int i=0;i<n-a.size()+1;i++){
+            string s1=s.substr(i,a.size());
+            if(s1==a){
+                v1.push_back(i);
+            }
+        }
+        for(int i=0;i<n-b.size()+1;i++){
+            string s1=s.substr(i,b.size());
+            if(s1==b){
+                v2.push_back(i);
+            }
+        }
+        vector<int>ans;
+        for(int i=0;i<v1.size();i++){
+            for(int j=0;j<v2.size();j++){
+                if(abs(v1[i]-v2[j])<=k){
+                   ans.push_back(v1[i]);
+                    break;
+                }   
+            }
+        }
+        //sort(ans.begin(),ans.end());
+        return ans;
+    }
+};
